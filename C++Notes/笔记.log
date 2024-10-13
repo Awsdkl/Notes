@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2024.9.28)  13 OCT 2024 09:40
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2024.9.28)  13 OCT 2024 14:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -694,13 +694,18 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 
-] (./笔记.toc)
+] (./笔记.toc [1
+
+])
 \tf@toc=\write4
 \openout4 = `笔记.toc'.
 
- [1
-
-] [2
+LaTeX Font Info:    Font shape `TU/FandolSong-Regular(0)/m/sl' in size <10.95> 
+not available
+(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on
+ input line 44.
+ [2]
+[3
 
 ]
 Chapter 1.
@@ -719,7 +724,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 73--79
 
  []
 
-[3
+[4
 
 ]
 
@@ -745,19 +750,21 @@ Underfull \hbox (badness 10000) in paragraph at lines 102--114
 
  []
 
-LaTeX Font Info:    Font shape `TU/FandolSong-Regular(0)/m/sl' in size <10.95> 
-not available
-(Font)              Font shape `TU/FandolSong-Regular(0)/m/it' tried instead on
- input line 114.
-[4] [5] [6
+[5] [6] [7
 
-] [7]
+]
 Chapter 2.
-File: picture/图论/连通性相关/1.png Graphic file (type bmp)
-<picture/图论/连通性相关/1.png>
 [8
 
-] [9]
+] [9
+
+] [10]
+Chapter 3.
+File: picture/图论/连通性相关/1.png Graphic file (type bmp)
+<picture/图论/连通性相关/1.png>
+[11
+
+] [12]
 
 Package fontspec Warning: Font "FandolKai-Regular" does not contain requested
 (fontspec)                Script "CJK".
@@ -774,21 +781,21 @@ Package fontspec Info: Font family 'FandolKai-Regular(0)' created for font
 (fontspec)             <->"[FandolKai-Regular.otf]/OT:language=dflt;"
 (fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
 
-[10] [11] (./笔记.aux)
+[13] [14] [15] [16] (./笔记.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2022/08/05>
  ***********
 Package rerunfilecheck Info: File `笔记.out' has not changed.
-(rerunfilecheck)             Checksum: A2528E98E1092BD1E57572FF53EF1523;1837.
+(rerunfilecheck)             Checksum: 50A5D638E29EBBE73A0E344B36562E8C;2572.
  ) 
 Here is how much of TeX's memory you used:
- 17969 strings out of 476761
- 373808 string characters out of 5802895
- 2090839 words of memory out of 5000000
- 39719 multiletter control sequences out of 15000+600000
+ 18002 strings out of 476761
+ 374112 string characters out of 5802895
+ 2091839 words of memory out of 5000000
+ 39752 multiletter control sequences out of 15000+600000
  566576 words of font info for 102 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  93i,8n,97p,362b,1798s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on 笔记.pdf (12 pages).
+Output written on 笔记.pdf (17 pages).

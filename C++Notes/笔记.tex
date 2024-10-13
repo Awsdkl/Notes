@@ -126,6 +126,36 @@ void exgcd(ll a,ll b,ll &x,ll &y)
 }
 	\end{lstlisting}
 	
+%============================================数据结构============================================
+	\part{数据结构}
+	\chapter{并查集}
+	\section{并查集}
+	\subsection{实现}
+	\subsubsection{解释}
+	$fa$：表示第 $i$ 个点的父亲。
+	\subsubsection{代码}
+	$fa$ 数组记得初始化。
+	\begin{lstlisting}
+int fa[(int)1e4+5];
+
+int Find(int x)
+{
+	return x == fa[x]?x:fa[x] = Find(fa[x]);
+}
+
+int merge(int x,int y)
+{
+	int a = Find(x);
+	int b = Find(y);
+	if(a != b)
+	{
+		fa[b] = a;
+	}
+}
+	\end{lstlisting}
+	\section{带权并查集}
+	
+	
 %==============================================图论==============================================
 	\part{图论}
 	\noindent
@@ -250,11 +280,58 @@ void tarjan(int u,int f,int root)
 	\subsection{过程}
 	和割点差不多。\par
 	树边能使整张图连通，因此割掉非树边后不影响连通性。因此 $e=(u,v)$ 是割边的必要条件是 $e$ 为树边。\par
-	不妨设 $v$ 是 $u$ 的儿子。若
-	
+	不妨设 $v$ 是 $u$ 的儿子。若割掉 e 后图不连通，根据求割点的经验，不难发现当 $low_v > dfn_u$ 时，$e$ 为割边。
+	\subsection{实现}
+	还没写...
 	\section{点双连通分量}
+	\subsection{实现}
 	\section{边双连通分量}
+	\subsection{实现}
 	\section{强连通分量}
+	\subsection{实现}
+	\subsubsection{解释}
+	$sta$：栈。\par
+	$top$：栈顶。\par
+	$insta$：判断是否在栈中。\par
+	$belong$：判断点 $i$ 在哪个强连通分量中。
+	\subsubsection{代码}
+	\noindent
+	此代码用 vector 存图。
+	\begin{lstlisting}
+vector<int> e[MAXN];
+int low[MAXN],dfn[MAXN],dfncnt,belong[MAXN],sc;
+int sta[MAXN],top;bool insta[MAXN];
+void tarjan(int u)
+{
+	low[u] = dfn[u] = ++dfncnt;
+	sta[++top] = u,insta[u] = true;
+	for(int i = e[u].size()-1;i >= 0;i--)
+	{
+		int v = e[u][i];
+		if(!dfn[v])
+		{
+			tarjan(v);
+			low[u] = min(low[u],low[v]);
+		}
+		else if(insta[v])
+		{
+			low[u] = min(low[u],low[v]);
+		}
+	}
+	
+	if(dfn[u] == low[u])
+	{
+		sc++;int now;
+		do
+		{
+			now = sta[top];
+			insta[now] = false;
+			belong[now] = sc;
+			sz[sc]++;
+		} while (sta[top--]!=u);
+	}
+}
+	\end{lstlisting}
 	
 	
 \end{document}
