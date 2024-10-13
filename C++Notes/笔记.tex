@@ -9,6 +9,7 @@
 \usepackage[hidelinks]{hyperref} %将目录加上链接，并取消红色方框
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{amssymb}
 
 
 %设置代码块（这样好看）
@@ -166,12 +167,91 @@ void exgcd(ll a,ll b,ll &x,ll &y)
 	
 	\section{割点}
 	\subsection{过程}
-	不难想到可以尝试删除一个点，然后判断此图的连通性。但这样做复杂度会极高，应此我们需要一个常用的算法：$\text{Tarjan}$。\par
+	不难想到可以尝试删除一个点，然后判断此图的连通性。但这样做复杂度会极高。应此我们需要用到 tarjan 算法。\par
+	设点 $x\in V$ 的子树为 $x$ 在 DFS 树上的子树，包含 $x$ 本身，记其为 $T(x)$。记 $\complement_{V}T(x) = T^{\prime}(x)$。
+	\subsubsection{对于非根节点的判定：}
+	设 $x$ 不为 DFS 生成树的根，则 $T^{\prime}(x) \not= \varnothing$。\par
+	若 $x$ 为割点，则删去后，对于 $z \in T^\prime(x)$， 存在 $y$ 使 $y,z$ 不连通，而删除 $x$ 后，所有 $T^\prime(x)$ 的边均存在，则 $y\in T(x)$。如果 $y$ 与 $z$ 不连通，因为 $T^\prime(x)$ 的连通性不变，既均连通，则 $y$ 与所有 $T^\prime(x)$ 中的点都不连通。\par
+	推出：若存在 $ y \in T(x)$ 在不经过 $x$ 的情况下与 $T^\prime(x)$ 中所有点均不连通，则 $x$ 就是割点。\par
+	现在我们思考怎么判断对于一个 $y \in T(x)$，是否在不经过 $x$ 的情况下与 $T^\prime(x)$ 中所有点都不连通。\par
+	注意到，如果 $y\in T(x)$ 不经过 $x$ 就和 $T^\prime(x)$ 连通，就一定存在从 $y$ 到 $T^\prime(x)$ 的一条路径。我们称这条路径在 $T^\prime(x)$ 的第一个结点为 $v$，倒数第二个，也就是最后一个在 $T(x)$ 上的结点为 $u$。如果 $(u,v)$ 是树边，那么 $u=x$，矛盾。则 $v$ 应该是 $u$ 的祖先。又因为 $x$ 是 $u$ 的祖先，$v\in T^\prime(x)$，则 $v$ 也是 $x$ 的祖先。\par 
+	这时我们发现，$x$ 不是割点，那么就会有一条\textbf{非树边}使 $y\in T(x)$ 连向 $x$ 的祖先。这个可以用时间戳来判断。设 $f_x$ 表示与 $x$ 通过\textbf{非树边}相连的点的时间戳的最小值，则可写为 $f_x < dfn_x$。\par
+	因为 $x$ 的不同儿子子树之间没有非树边（子树独立性），设 $x$ 的儿子 $y^\prime$ 的子树包含 $y$，即 $y\in T(y^\prime)$。\par
+	\begin{itemize}
+		\item 对于 $T(y^\prime)$，如果存在 $u\in T(y^\prime)$ 满足 $f_u < dfn_u$，那么删除 $x$ 后 $T(y^\prime)$ 的每个点与 $T^\prime(x)$ 均连通。这时 $u$ 与 $T^\prime(x)$ 中的某个点通过非树边直接连通，$T(y^\prime)$ 中的所有点均通过树边连通。此时 $x$ 不是割点。\par
+		\item 反之，如果不存在 $u\in T(y^\prime)$ 满足 $f_u < dfn_u$，那么删除 $x$ 后 $T(y^\prime)$ 的每个点与 $T^\prime(x)$ 均不连通。此时 $x$ 是割点。且只需要出现一个 $y^\prime$ 满足这个条件就可以判断出 $x$ 是割点。
+	\end{itemize}\par
+	原本我们需要判断 $T(x)$ 上的所有点去检查 $f_u < dfn_u$ 的情况是否出现。现在令 $low_x$ 表示与 $x$ 及其子树上的所有点通过非树边相连接的点的时间戳的最小值，则可以只通过 $low_x$ 判断即可。
+	这样我们就得到了在 $x$ 为非根节点情况下的割点判定方法：\par
 	
+	{
+		\kaishu
+		对于一个非根节点 $x$，$x$ 是割点当且仅当存在 $y$ 是 $x$ 的子节点，有 $low_y \geq dfn_x$。
+	}
+	\subsubsection{对于根节点的判定：}
+	根节点的判定相对简单。\par
+	设点 $x$ 是 DFS 树上的根节点。\par
+	若 $x$ 有大于一个子节点，根据子树独立性，删去 $x$ 后其子节点的子树各不相通，所以 $x$ 是割点。反之，若 $x$ 有小于等于一个子节点，删去后剩余部分通过树边连通，$x$ 不是割点。\par
+	\par
+	这样我们就得到了判断割点的完整方法。
 	
-	
+	\subsection{实现}
+	\subsubsection{解释}
+	$dfn$：某个点被遍历到的时间戳。\par
+	$low$：某个点通过非树边到达最早的点的时间戳。\par
+	$is\_cut$：是否为割点。\par
+	$cutcnt$：统计割点个数。\par
+	在 dfs 过程中求出 dfn 和 low，然后进行对割点的判断。
+	\subsubsection{代码}
+	\noindent
+	此代码用 vector 存图。
+	\begin{lstlisting}
+vector<int> e[MAXN];
+int dfn[MAXN];
+int low[MAXN];
+int cnt;
+bool is_cut[MAXN];
+int cutcnt;
+
+void tarjan(int u,int f,int root)
+{
+	dfn[u] = low[u] = ++cnt;
+	int son = 0; //用于统计子节点个数
+	for(int i = e[u].size()-1;i >= 0;i--)
+	{
+		int v = e[u][i];
+		if(v == f) continue;
+		if(!dfn[v])//说明这个 v 是在 x 的子树中的
+		{
+			son++;
+			tarjan(v,u,root);
+			low[u] = min(low[u],low[v]);
+			if(dfn[u] <= low[v])
+			{
+				if(!is_cut[u] && u != root)
+				{
+					//非根节点的情况
+					cutcnt++;
+					is_cut[u] = true;
+				}
+			}
+		}
+		else low[u] = min(low[u],dfn[v]);
+		//这个 else 中 v 不再 x 的子树当中。
+		//而我们求的是 x 子树当中 low 的最小值。
+		//因此 min 的第二个参数是 dfn[v] 而不是 low[v]。
+	}
+	if(u == root && son >= 2) is_cut[root] = true,cutcnt++;
+	//根节点的情况
+}
+	\end{lstlisting}
 	
 	\section{割边}
+	\subsection{过程}
+	和割点差不多。\par
+	树边能使整张图连通，因此割掉非树边后不影响连通性。因此 $e=(u,v)$ 是割边的必要条件是 $e$ 为树边。\par
+	不妨设 $v$ 是 $u$ 的儿子。若
+	
 	\section{点双连通分量}
 	\section{边双连通分量}
 	\section{强连通分量}
