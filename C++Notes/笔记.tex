@@ -40,6 +40,51 @@
 \begin{document}
 	\maketitle
 	\tableofcontents
+%==============================================字符串=============================================
+	\part{字符串}
+	\chapter{字符串匹配}
+	字符串匹配又被称为模式匹配（pattern matching），简单来说就是在主串 $s$ 中寻找子串 $t$。而字符串 $t$ 被成为 \textbf{模式串}（pattern）。 \par
+	\section{暴力做法}
+	这种做法非常简单。思想主要就是从主串 $s$ 的第一个字符开始和模式串 $t$ 的第一个字符开始匹配，若相等，则比较二者后续的字符。若不匹配，则模式串 $t$ 退回到第一个字符，与主串 $s$ 的下一个字符比较。如此循环往复，直至 $s$ 与 $t$ 都比较完毕。\par
+	不难发现这种算法的时间复杂度在最坏情况下为 $O(|s|\cdot|t|)$，是非常大的。
+	\section{KMP 算法}
+	
+	\subsection{前缀函数}
+	\subsubsection{定义}
+	给定一个长度为 $m$ 的字符串 $t$，则其前缀数组 $nxt_i$ 表示：$t$ 的第 $1$ 至 $i$ 位中前缀和后缀相同的部分的长度。
+	\subsection{代码}
+	\begin{lstlisting}
+char s[MAXN],t[MAXN];
+int n,m;
+int nxt[MAXN];
+
+void init()
+{
+	for(int i = 2,j = 0;i <= m;i++)
+	{
+		while(j && t[i] != t[j+1]) j = nxt[j];
+		if(t[i] == t[j+1]) j++;
+		nxt[i] = j;
+	}
+}
+	\end{lstlisting}
+	\section{查找}
+	\subsection{代码}
+	\begin{lstlisting}
+void Match()
+{
+	for(int i = 1,j = 0;i <= n;i++)
+	{
+		while(j && s[i] != t[j+1]) j = nxt[j];
+		if(s[i] == t[j+1]) j++;
+		if(j == m)
+		{
+			//找到了
+		}
+	}
+}
+	\end{lstlisting}
+	
 %==============================================数学==============================================
 	\part{数学}
 	\chapter{数论}
