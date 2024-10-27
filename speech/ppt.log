@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2024.9.28)  26 OCT 2024 09:17
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2024.9.28)  27 OCT 2024 13:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1242,10 +1242,7 @@ LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <6> not available
 
 ] [23
 
-]
-File: picture/6.png Graphic file (type bmp)
-<picture/6.png>
- [24
+] [24
 
 ]
 File: picture/6.png Graphic file (type bmp)
@@ -1277,7 +1274,10 @@ File: picture/6.png Graphic file (type bmp)
 <picture/6.png>
  [30
 
-] [31
+]
+File: picture/6.png Graphic file (type bmp)
+<picture/6.png>
+ [31
 
 ] [32
 
@@ -1302,6 +1302,19 @@ File: picture/6.png Graphic file (type bmp)
 
 ] [42
 
+] [43
+
+] [44
+
+] [45
+
+] [46
+
+] [47
+
+]
+[48
+
 ]
 \tf@nav=\write6
 \openout6 = `ppt.nav'.
@@ -1321,12 +1334,12 @@ Package rerunfilecheck Info: File `ppt.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27968 strings out of 476761
- 622597 string characters out of 5802895
+ 27970 strings out of 476761
+ 622613 string characters out of 5802895
  1937839 words of memory out of 5000000
- 49416 multiletter control sequences out of 15000+600000
+ 49418 multiletter control sequences out of 15000+600000
  564919 words of font info for 82 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  142i,15n,137p,447b,613s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on ppt.pdf (42 pages).
+Output written on ppt.pdf (48 pages).
