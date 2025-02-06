@@ -29,24 +29,36 @@
 \contentsline {subsubsection}{解释}{11}{subsubsection*.8}%
 \contentsline {subsubsection}{代码}{11}{subsubsection*.9}%
 \contentsline {section}{\numberline {3.2}带权并查集}{11}{section.3.2}%
-\contentsline {part}{IV\hspace {1em}图论}{12}{part.4}%
-\contentsline {chapter}{\numberline {4}连通性相关}{14}{chapter.4}%
-\contentsline {section}{\numberline {4.1}相关定义与前置知识}{14}{section.4.1}%
-\contentsline {section}{\numberline {4.2}割点}{15}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}过程}{15}{subsection.4.2.1}%
-\contentsline {subsubsection}{对于非根节点的判定：}{15}{subsubsection*.10}%
-\contentsline {subsubsection}{对于根节点的判定：}{16}{subsubsection*.11}%
-\contentsline {subsection}{\numberline {4.2.2}实现}{16}{subsection.4.2.2}%
-\contentsline {subsubsection}{解释}{16}{subsubsection*.12}%
-\contentsline {subsubsection}{代码}{16}{subsubsection*.13}%
-\contentsline {section}{\numberline {4.3}割边}{17}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}过程}{17}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}实现}{17}{subsection.4.3.2}%
-\contentsline {section}{\numberline {4.4}点双连通分量}{18}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}实现}{18}{subsection.4.4.1}%
-\contentsline {section}{\numberline {4.5}边双连通分量}{18}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}实现}{18}{subsection.4.5.1}%
-\contentsline {section}{\numberline {4.6}强连通分量}{18}{section.4.6}%
-\contentsline {subsection}{\numberline {4.6.1}实现}{18}{subsection.4.6.1}%
-\contentsline {subsubsection}{解释}{18}{subsubsection*.14}%
-\contentsline {subsubsection}{代码}{18}{subsubsection*.15}%
+\contentsline {chapter}{\numberline {4}线段树}{12}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Kinetic Tournament 树 (KTT)}{12}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}解决的问题}{12}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}过程}{12}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}实现}{13}{subsection.4.1.3}%
+\contentsline {part}{IV\hspace {1em}图论}{16}{part.4}%
+\contentsline {chapter}{\numberline {5}树}{18}{chapter.5}%
+\contentsline {section}{\numberline {5.1}相关定义与前置知识}{18}{section.5.1}%
+\contentsline {section}{\numberline {5.2}树链剖分}{19}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}解决的问题}{19}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}重链剖分}{19}{subsection.5.2.2}%
+\contentsline {subsubsection}{实现}{20}{subsubsection*.10}%
+\contentsline {subsubsection}{重链剖分性质}{21}{subsubsection*.11}%
+\contentsline {chapter}{\numberline {6}连通性相关}{22}{chapter.6}%
+\contentsline {section}{\numberline {6.1}相关定义与前置知识}{22}{section.6.1}%
+\contentsline {section}{\numberline {6.2}割点}{23}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}过程}{23}{subsection.6.2.1}%
+\contentsline {subsubsection}{对于非根节点的判定：}{23}{subsubsection*.12}%
+\contentsline {subsubsection}{对于根节点的判定：}{24}{subsubsection*.13}%
+\contentsline {subsection}{\numberline {6.2.2}实现}{24}{subsection.6.2.2}%
+\contentsline {subsubsection}{解释}{24}{subsubsection*.14}%
+\contentsline {subsubsection}{代码}{24}{subsubsection*.15}%
+\contentsline {section}{\numberline {6.3}割边}{25}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}过程}{25}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}实现}{25}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}点双连通分量}{26}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}实现}{26}{subsection.6.4.1}%
+\contentsline {section}{\numberline {6.5}边双连通分量}{26}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}实现}{26}{subsection.6.5.1}%
+\contentsline {section}{\numberline {6.6}强连通分量}{26}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}实现}{26}{subsection.6.6.1}%
+\contentsline {subsubsection}{解释}{26}{subsubsection*.16}%
+\contentsline {subsubsection}{代码}{26}{subsubsection*.17}%

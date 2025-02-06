@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2024.9.28)  26 OCT 2024 12:24
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024/Arch Linux) (preloaded format=xelatex 2025.1.21)  6 FEB 2025 20:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -761,15 +761,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 147--159
 Chapter 3.
 [11
 
-] [12
-
-] [13]
+]
 Chapter 4.
+[12
+
+] [13] [14] [15] [16
+
+] [17]
+Chapter 5.
+[18
+
+]
+File: picture/图论/树/1.png Graphic file (type bmp)
+<picture/图论/树/1.png>
+ [19] [20] [21]
+Chapter 6.
 File: picture/图论/连通性相关/1.png Graphic file (type bmp)
 <picture/图论/连通性相关/1.png>
-[14
+[22
 
-] [15]
+] [23]
 
 Package fontspec Warning: Font "FandolKai-Regular" does not contain requested
 (fontspec)                Script "CJK".
@@ -786,21 +797,21 @@ Package fontspec Info: Font family 'FandolKai-Regular(0)' created for font
 (fontspec)             <->"[FandolKai-Regular.otf]/OT:language=dflt;"
 (fontspec)             - 'small caps'  (m/sc) with NFSS spec.: 
 
-[16] [17] [18] [19] (./笔记.aux)
+[24] [25] [26] [27] (./笔记.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2022/08/05>
  ***********
 Package rerunfilecheck Info: File `笔记.out' has not changed.
-(rerunfilecheck)             Checksum: 0F3B4CEF5189F92173EBC8CE04B1FC0A;3248.
+(rerunfilecheck)             Checksum: DB5828C1800FF93AA996322D05CC93D2;4251.
  ) 
 Here is how much of TeX's memory you used:
- 18023 strings out of 476761
- 374280 string characters out of 5802895
- 2091839 words of memory out of 5000000
- 39773 multiletter control sequences out of 15000+600000
+ 18283 strings out of 476761
+ 386849 string characters out of 5802895
+ 2216839 words of memory out of 5000000
+ 40032 multiletter control sequences out of 15000+600000
  566576 words of font info for 102 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  93i,8n,97p,362b,1798s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on 笔记.pdf (20 pages).
+Output written on 笔记.pdf (28 pages).

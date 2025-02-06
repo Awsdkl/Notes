@@ -200,12 +200,265 @@ int merge(int x,int y)
 	\end{lstlisting}
 	\section{带权并查集}
 	
+	\chapter{线段树}
+	\section{Kinetic Tournament 树 (KTT)}
+	\subsection{解决的问题}
+	先来看 \href{https://www.luogu.com.cn/problem/P5693}{Luogu5693}。省流：区间加，查询最大子段和。\par
+	会发现它和 \href{https://www.luogu.com.cn/problem/P4513}{Luogu4513} 的模板最大子段和是有差别的（废话，不然怎么会是紫题）。这道题多了区间加，是无法直接做的。因此就有毒瘤想到了分块。但是我们不会，于是就有大佬搞出了 KTT。\par
+	\subsection{过程}
+	该做法的原理在 \href{https://blog.csdn.net/EI_Captain/article/details/101040226}{EI 的博客} 中有详细阐述。这里会用更加通俗易懂（至少我觉得）的语言来描述。\par
+	首先考虑经典不带区间修的最大子段和线段树做法，每个结点维护 $\text{lm, mm, rm, sum}$ 分别表示前缀最大子段和，最大子段和，后缀子段和，区间总和。于是有：
+	$$\text{lm} = \max(\text{lp.lm, lp.sum + rp.sum})$$
+	$$\text{mm} = \max(\text{lp.mm, rp.mm, lp.rm + rp.lm})$$
+	$$\text{rm} = \max(\text{rp.rm, rp.sum + lp.rm})$$
+	$$\text{sum = lp.sum + rp.sum}$$
+	再来看修改，如果这一次区间修改\textbf{没有}造成决策的改变（及上述式子中 max 的取值没有改变），则该区间的答案会增大 $kx$。（其中 $k$ 是原先被选择子段的长度，$x$ 是本次修改每个点加的值）\par
+	因此我们可以\textbf{将原来维护的每个值看成一次函数}，每次区间加操作后值符合函数 $y=kx+b$，其中，$b$ 为该值原本的大小，而 $y$ 就是修改后值的大小。\par
+	在这一情况下，当所加的 $x$ 极小时，max 的取值并不会发生变化。\par
+	我们假设现在在 max 函数里左右两个一次函数分别为 $y1, y2$，根据其图像得（图像懒得画了）：当 $x$ 较小时，max 的值取其中一条直线；当 $x$ 大于一定值时（这个值就是两图像交点对应的横坐标），max 的取值改为另一条直线。我们称这是一次 ”击败 (defeat) “ 事件。在这种情况下我们向下暴力递归到该节点并重新选取当下 $x$ 值最大的直线。\par
+	应此我们需要多记录一个当前节点发生击败事件所需最小的 $x$（通俗来讲，就是当前节点及其子树的所有节点的众多 max 中的一对函数两两相交的节点的横坐标的最小值）。当未发生击败事件时，将这个 $x$ 减小增加的值。当发生时，向下递归，如上述操作。\par 
+	看似很暴力，通过复杂的势能分析，EI 得到复杂度为 $O((n+m)\log^3n+q\log n)$。接下来我们来分析时间复杂度：\par
+	可以发现作者不会，分析完毕。\par
+	\subsection{实现}
+	\begin{lstlisting}
+struct Func//一次函数
+{
+	int k; ll b;
+	Func operator+(const Func &_)const
+	{
+		return Func{k + _.k, b + _.b};
+	}
+	void add(ll v) { b += k * v; }
+};
+
+/// @brief 对两个一次函数取 x = 0 时的最值，同时给出 max 的选取不发生变化的最大值。
+/// @param a 第一个一次函数
+/// @param b 第二个一次函数
+/// @return 一个 pair。
+/// @return 第一个是当 x 较小（这里 x = 0）时值更大的函数。
+/// @return 第二个是当 x 大于这个值时，会发生一次“击败事件”，及另一个函数的值更大。
+pair<Func, ll> max(Func a, Func b)
+{
+	if(a.k<b.k||a.k==b.k&&a.b<b.b) swap(a,b);
+	if(a.b>=b.b) return make_pair(a,INF);
+	return make_pair(b,(b.b-a.b)/(a.k-b.k));
+}
+
+struct Node //线段树的节点
+{
+	Func lm, mm, rm, sum;
+	ll x;
+	ll tag;
+	Node operator+(const Node &_)const
+	{
+		Node re;re.tag = 0;
+		pair<Func, ll> tmp;
+		re.x = min(x, _.x);
+		tmp = max(lm, sum + _.lm);
+		re.lm = tmp.first; re.x = min(re.x, tmp.second);
+		tmp = max(_.rm, _.sum + rm);
+		re.rm = tmp.first; re.x = min(re.x, tmp.second);
+		tmp = max(mm, _.mm);
+		re.x = min(re.x, tmp.second);
+		tmp = max(tmp.first, rm + _.lm);
+		re.mm = tmp.first; re.x = min(re.x, tmp.second);
+		re.sum = sum + _.sum;
+		return re;
+	}
+};
+
+struct KTT
+{
+	#define lp (p<<1)
+	#define rp (p<<1|1)
+	Node tree[MAXN<<2];
+	ll nums[MAXN];
+	int len;
+	//这个函数将节点 p 加上 v
+	void update(int p, ll v)
+	{
+		tree[p].tag += v;
+		tree[p].x -= v;
+		tree[p].lm.add(v);
+		tree[p].mm.add(v);
+		tree[p].rm.add(v);
+		tree[p].sum.add(v);
+	}
+	void push_up(int p)
+	{
+		tree[p] = tree[lp] + tree[rp];
+	}
+	void push_down(int p)
+	{
+		if(!tree[p].tag) return;
+		update(lp, tree[p].tag);
+		update(rp, tree[p].tag);
+		tree[p].tag = 0;
+	}
+	void build(int s, int t, int p)
+	{
+		if(s == t)
+		{
+			Func tmp = {1, nums[s]};
+			tree[p] = Node{tmp, tmp, tmp, tmp, INF, 0};
+			return;
+		}
+		int mid = (s + t) >> 1;
+		build(s, mid, lp);
+		build(mid+1, t, rp);
+		push_up(p);
+	}
+	//发生击败事件，向下递归直到 v < 节点的 x
+	void defeat(int s, int t, int p, ll v)
+	{
+		if(v > tree[p].x)
+		{
+			int mid = (s + t) >> 1;
+			ll t = tree[p].tag + v;
+			tree[p].tag = 0;
+			defeat(s, mid, lp, t);
+			defeat(mid+1, t, rp, t);
+			push_up(p);
+		}
+		else update(p, v);
+	}
+	void add(int l, int r, int s, int t, int p, ll v)
+	{
+		if(l <= s && t <= r)
+		{
+			defeat(s, t, p, v);
+			return;
+		}
+		push_down(p);
+		int mid = (s + t) >> 1;
+		if(l <= mid) add(l, r, s, mid, lp, v);
+		if(r > mid) add(l, r ,mid+1, t, rp, v);
+		push_up(p);
+	}
+	Node query(int l, int r, int s, int t, int p)
+	{
+		if(l <= s && t <= r)
+		{
+			return tree[p];
+		}
+		int mid = (s + t) >> 1;
+		push_down(p);
+		if(r <= mid) return query(l, r, s, mid, lp);
+		if(l > mid) return query(l, r, mid+1, t, rp);
+		return query(l, r, s, mid, lp) + query(l, r, mid+1, t, rp);
+	}
+};
+	\end{lstlisting}
+	
 	
 %==============================================图论==============================================
 	\part{图论}
-	\noindent
+	语文不好，结点节点乱用了。\\
 	\textbf{一些常用概念}：\par
+	\textbf{度数}，与一个顶点 $v$ 关联的边的条数称作该顶点的 \textbf{度 (degree)}，记作 $d(v)$。特别的，对于边 $(v,v)$，则每条边对 $d(v)$ 要产生 $2$ 的贡献。\par
 	\textbf{时间戳}，表示\textbf{每个点被第一次访问的时间}(可以简单理解为是第几个被访问的点)。我们用 \textbf{dfn} （dfs number）数组记录每个点的时间戳，即 $\text{dfn}_i$ 表示第一次访问结点 $i$ 的时间。若结点 $i$ 未被访问，则 $\text{dfn}_i = 0$，因此通常也可以用 dfn 数组判断一个结点是否被访问过。
+	\chapter{树}
+	\section{相关定义与前置知识}
+	图论中的树和现实中的树很像。\par
+	树上有几种节点：
+	\begin{itemize}
+		\item 根结点 (root)：在有根树上指定的一个节点，无特殊要求。
+		\item 叶结点 (leaf node)：对于无根树，即为度数不超过 $1$ 的结点；对于有根树，即为没有子结点的结点。
+	\end{itemize}\par
+	一个没有固定根节点的树称为 \textbf{无根树 (unrooted tree)}。无根树也有形式化的定义：
+	\begin{itemize}
+		\item 有 $n$ 个结点，$n-1$ 条边的连通无向图.
+		\item 无向无环连通图。
+		\item 任意两个结点之间有且仅有一条简单路径的无向图。
+	\end{itemize}\par
+	在无向图的基础上，若指定一个点为根（若需要，任何点都可被指定为根），则形成一棵 \textbf{有根树 (rooted tree)}。有根树在很多时候和无根树一样，只是根规定了结点的上下关系。\par
+	\begin{itemize}
+		\item 森林（forest）：多个树凑一起就是森林（是不是很形象？）。同时，一棵树也是森林。
+	\end{itemize}
+	对于有根树（对于具体题目中的无根树，通常会任意指定一个点作为根）：
+	\begin{itemize}
+		\item 父亲 (双亲结点 parent)：从该结点到根的路径上的第二个点。特别的，根结点没有父结点。
+		\item 祖先 (ancestor)：从该点到根的路径上处该点以外的所有结点均为该点的祖先。
+		\item 子结点 (孩子结点 child node)：若 $u$ 为 $v$ 的父亲，则 $v$ 是 $u$ 的子结点。子结点的顺序一般不区分，但有时二叉树会分为左子结点和右子结点。
+		\item 深度 (depth)：该点到根结点的路径上的边数。
+		\item 高度 (height)：所有结点的深度最大值。
+		\item 兄弟 (sibling)：同一个父亲的多个子结点互为兄弟。
+		\item 后代 (descendant)：子结点和子结点的后代（自己递归）。
+		\item 子树 (subtree)：删掉与父亲连的边后，该结点所在的子图为该结点的子树。
+	\end{itemize}
+	英语是不是看着有点怪？为了防止性别歧视！
+	
+	\section{树链剖分}
+	\subsection{解决的问题}
+	树链剖分可以将树分割成若干条链，使其组合成线性结构，以可以用其他数据结构（如线段树）维护树上信息。\par
+	下面用 \href{https://www.luogu.com.cn/problem/P3384}{Luogu 3384} 为例子。可以看到这道题需要我们对树上的一些点区间操作。若暴力一个点一个点去操作是肯定过不了的。看到区间操作我们容易想到线段树等数据结构，但因为树不是一个线性结构，因此无法直接使用。这时候就需要先用树链剖分进行操作了。\par
+	树链剖分有多种形式，如 \textbf{重链剖分} 和 \textbf{长链剖分} 和 $Link/cut Tree$ 的剖分。但大多数情况下，树链剖分还是指重链剖分。\par
+	\subsection{重链剖分}
+	重链剖分能保证剖出来的每条链上结点的 DFS 序连续，因此可以方便其他数据结构（如线段树）来维护树上信息。\par
+	我们先给出一些定义：
+	\begin{itemize}
+		\item 重子节点：一个结点的子节点中子树最大的子结点。如果有多个子树最大的子节点，任取其一。如果没有子节点，则无重子节点。
+		\item 轻子节点：剩下的点。
+		\item 重边：这个结点到重子节点的边。
+		\item 轻边：这个结点到轻子节点的边。
+		\item 重链：若干条重边构成的链。特别的，漏单的点也是一条重链。
+	\end{itemize}
+	下面给出一张图：
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=10cm]{picture/图论/树/1.png}
+		\caption{重链剖分图例}
+	\end{figure}\par
+	不难发现，每个轻子节点都是链顶，且每条链都是一个轻子节点后面跟着一大坨的重子节点。
+	
+	\subsubsection{实现}
+	重链剖分的实现分为了两个 dfs 的过程。\par
+	对于第一个 dfs，需要记录每个点的父节点，深度，子树大小，重子节点。
+	\begin{lstlisting}
+const int MAXN = 1e5+5;
+int dep[MAXN],siz[MAXN],fa[MAXN],hson[MAXN];
+//siz 是子树大小；hson 是重子节点
+void dfs1(int u, int d)
+{
+	siz[u] = 1;		//千万别忘了把 size 初始赋为 1
+	dep[u] = d;
+	for(int i = e[u].size()-1;i >= 0;i--)
+	{
+		int v = e[u][i];
+		if(v == fa[u]) continue;
+		fa[v] = u;
+		dfs1(v, d+1);
+		if(siz[v] > siz[hson[u]]) hson[u] = v;	//取 size 最大的为重子节点
+		siz[u] += siz[v];
+	}
+}
+	\end{lstlisting}\par
+	第二个 dfs 记录每个点所在链的链顶（一般来说要初始化为该点本身）、dfn，即 dfs 序、rnk，即 dfs 序对应的编号。\par
+	dfs 时，要求优先遍历重子节点。这样就可以保证一条链上的 dfn 是连续的。
+	\begin{lstlisting}
+const int MAXN = 1e5+5;
+int top[MAXN],dfn[MAXN],rnk[MAXN],dfncnt;
+void dfs2(int u, int t)
+{
+	top[u] = t; //记录链顶
+	dfn[u] = ++dfncnt; //记录 dfn 序
+	rnk[dfncnt] = u;
+	if(hson[u]) dfs2(hson[u], t); //先遍历重子节点，注意一定要判断是否有重子节点
+	for(int i = e[u].size()-1;i >= 0;i--)
+	{
+		int v = e[u][i];
+		if(v == hson[u] || v == fa[u]) continue;
+		//到这里 v 一定是轻子节点
+		dfs2(v, v); //上面说过了，轻子节点一定是链顶，应此第二个参数填 v
+	}
+}
+	\end{lstlisting}\par
+	重链剖分的变量还是挺多的，有时候还会忘记操作。因此可以先把数组都打好，然后对着有的数组来检查操作是否都做完了。亲测好用。
+	\subsubsection{重链剖分性质}
+	树上每个节点都属于且仅属于一条重链。\par
+	
+	
+	
 	\chapter{连通性相关}
 	\section{相关定义与前置知识}
 	无向图的连通性主要研究割点和割边。
