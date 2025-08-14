@@ -1,8 +1,9 @@
-\documentclass[11pt,oneside,a4paper,UTF8]{book}
+\documentclass[10pt,twoside,a4paper,UTF8]{ctexbook}
 
-\usepackage[UTF8]{ctex}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{geometry} % 页面布局
+\geometry{a4paper, margin=1in} % 设置纸张大小和边距
 \usepackage{titlesec}
 \usepackage{geometry}
 \usepackage{amsmath}
@@ -10,7 +11,57 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
 
+\usepackage{xpatch}
+\makeatletter
+\xpatchcmd{\chapter}
+{\cleardoublepage}{\clearpage}
+{}{}
+\makeatother
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[OR]{\rightmark \ \ \ \ \thepage}
+\fancyhead[EL]{\thepage \ \ \ \ \leftmark}
+\renewcommand{\chaptermark}[1]{\markboth{第 \thechapter 章\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection \ \ #1}}
+
+\titleformat{\part}
+{\heiti\Huge\centering}
+{第 \thepart 部分}
+{1em}{}
+
+\titleformat{\chapter}
+{\heiti\huge}
+{第 \thechapter 章}
+{1em}{}
+
+\titleformat{\section}
+{\heiti\Large}
+{\thesection}
+{1em}{}
+
+\titleformat{\subsection}
+{\heiti\large}
+{\thesubsection}
+{1em}{}
+
+\titleformat{\subsubsection}
+{\heiti}
+{}
+{0em}{}
+
+\usepackage{xpatch}
+\makeatletter
+\xpatchcmd{\chapter}
+{\cleardoublepage}{\clearpage}
+{}{}
+\xpatchcmd{\part}
+{\cleardoublepage}{\clearpage}
+{}{}
+\makeatother
 
 %设置代码块（这样好看）
 \lstset
@@ -31,8 +82,8 @@
 	tabsize=4,                                                                                     % 缩进空格数
 }
 
-%设置页边距
-\geometry{left=3cm,right=3cm,top=2cm,bottom=2cm}
+\setmonofont{Consolas}
+\setCJKmonofont{SimHei}
 
 \title{编程学习笔记}
 \author{Awsdkl}
@@ -42,17 +93,17 @@
 	\tableofcontents
 %==============================================字符串=============================================
 	\part{字符串}
-	\chapter{字符串匹配}
-	字符串匹配又被称为模式匹配（pattern matching），简单来说就是在主串 $s$ 中寻找子串 $t$。而字符串 $t$ 被成为 \textbf{模式串}（pattern）。 \par
-	\section{暴力做法}
+	\chapter{字符串}
+	\section{字符串匹配}
+	字符串匹配又被称为模式匹配（pattern matching），简单来说就是在主串 $s$ 中寻找子串 $t$。而字符串 $t$ 被成为 \texttt{模式串}（pattern）。 \par
+	\subsection{暴力做法}
 	这种做法非常简单。思想主要就是从主串 $s$ 的第一个字符开始和模式串 $t$ 的第一个字符开始匹配，若相等，则比较二者后续的字符。若不匹配，则模式串 $t$ 退回到第一个字符，与主串 $s$ 的下一个字符比较。如此循环往复，直至 $s$ 与 $t$ 都比较完毕。\par
 	不难发现这种算法的时间复杂度在最坏情况下为 $O(|s|\cdot|t|)$，是非常大的。
-	\section{KMP 算法}
+	\subsection{KMP 算法}
 	
-	\subsection{前缀函数}
-	\subsubsection{定义}
+	\subsubsection{前缀函数}
 	给定一个长度为 $m$ 的字符串 $t$，则其前缀数组 $nxt_i$ 表示：$t$ 的第 $1$ 至 $i$ 位中前缀和后缀相同的部分的长度。
-	\subsection{代码}
+	\subsubsection{代码}
 	\begin{lstlisting}
 char s[MAXN],t[MAXN];
 int n,m;
@@ -68,25 +119,168 @@ void init()
 	}
 }
 	\end{lstlisting}
-	\section{查找}
-	\subsection{代码}
+	\subsection{查找}
+	\subsubsection{代码}
 	\begin{lstlisting}
 void Match()
 {
-	for(int i = 1,j = 0;i <= n;i++)
+    for(int i = 1,j = 0;i <= n;i++)
+    {
+        while(j && s[i] != t[j+1]) j = nxt[j];
+        if(s[i] == t[j+1]) j++;
+        if(j == m)
+        {
+            //找到了
+        }
+    }
+}
+	\end{lstlisting}
+	\section{Lyndon 分解}
+	我们首先介绍 Lyndon 分解的概念。
+	
+	Lyndon 串是指对于一个字符串 $s$，若 $s$ 的字典序严格小于 $s$ 的所有后缀的字典序，则称 $s$ 为 Lyndon 串。换句话说，当且仅当 $s$ 的字典序严格小于它的所有非平凡的循环同构串时，$s$ 为 Lyndon 串。
+	
+	Lyndon 分解指将串 $s$ 分解为 $s = w_1 w_2 \cdots w_k$，其中所有 $w_i$ 均为 Lyndon，且它们的字典序按照非严格单调递减排序。
+	
+	\subsection{Duval 算法}
+	Duval 算法可以在 $O(n)$ 的时间复杂度内求出一个串的 Lyndon 分解。
+	
+	这里我们先引出近似 Lyndon 串的概念。如果一个字符串 $s$ 能被分解成 $s = ww\cdots\bar w$ 的形式，其中 $w$ 为 Lyndon 串，$\bar w$ 为 $w$ 的一个前缀（可能为空），则称 $s$ 为一个近似 Lyndon 串。同时，一个 Lyndon 串也是一个近似 Lyndon 串。
+	
+	Duval 算法用了贪心的思想。在算法过程中，我们将带分解串 $s$ 分成三个部分 $s=s_1s_2s_3$，其中 $s_1$ 是已经分解好的部分，$s_2$ 是一个近似 Lyndon 串，$s_3$ 是未处理部分。
+	\subsubsection{过程}
+	在算法中，我们会尝试将 $s_3$ 的首字符添加到 $s_2$ 的末尾，然后判断 $s_2$ 是否仍为近似 Lyndon 串。若不是，则我们将 $s_2$ 的前缀是 Lyndon 的部分接到 $s_1$ 的末尾。
+	
+	具体的，我们需要维护三个变量 $i, j, k$。其中，$i$ 指向 $s_2$ 的首字符，并从 $1$ 遍历到 $n$。$j$ 指向 $s_3$ 的首字符。$k$ 指向 $s_2$ 中我们当前考虑的字符，即 $j$ 在 $s_2$ 的上一个循环节中对应的字符。我们的目标是将 $s_j$ 加到 $s_2$ 的末尾，这就需要 $s_j$ 与 $s_k$ 做比较。
+	
+	不难推出三种比较的情况如下：
+	\begin{itemize}
+		\item $s_j = s_k$：将 $s_j$ 加到 $s_2$ 末尾并不会影响 $s_2$ 近似 Lyndon 串的性质。则将 $j, k$ 自增即可。
+		\item $s_j > s_k$：此时 $s_2s_j$ 变为一个 Lyndon 串。此时将 $j$ 自增，$k$ 指向 $s_2$ 的首字符即可。这样 $s_2$ 就变为了一个循环次数为 $1$ 的新的 Lyndon 串了。
+		\item $s_j < s_k$：此时 $s_2s_j$ 就不是一个近似 Lyndon 串了。我们需要从 $s_2$ 中分解出它的一个 Lyndon 子串。这个子串的长度为 $j-k$，即一个循环节的长度。然后 $s_2$ 变成了分解后剩下的部分，继续循环下去（注意此时不要改动 $j, k$），直到循环节被截取完。对于剩下的部分，我们只需要再回退到剩余部分的开头即可。
+	\end{itemize}
+	
+	\subsubsection{代码}
+	模板题：\href{https://www.luogu.com.cn/problem/P6114}{Luogu6114}。
+	\begin{lstlisting}
+char s[MAXN];
+int n;
+int ans;
+int main()
+{
+	scanf("%s", s+1);
+	n = strlen(s+1);
+	for(int i = 1, j, k;i <= n;)
 	{
-		while(j && s[i] != t[j+1]) j = nxt[j];
-		if(s[i] == t[j+1]) j++;
-		if(j == m)
+		j = i + 1; k = i;
+		while(j <= n && s[j] >= s[k])
 		{
-			//找到了
+			if(s[j] > s[k]) k = i;
+			else k++;
+			j++;
+		}
+		while(i <= k)
+		{
+			ans ^= i + j - k - 1;
+			i += j - k;
 		}
 	}
+	printf("%d", ans);
+	return 0;
 }
 	\end{lstlisting}
 	
+	\subsubsection{复杂度分析}
+	
+	循环次数不超过 $4n-3$，因此时间复杂度为 $O(n)$。
+	
+	\section{回文串}
+	\subsection{Manacher 算法}
+	
+	
 %==============================================数学==============================================
 	\part{数学}
+	\chapter{组合数学}
+	\section{二项式系数}
+	\subsection{Gosper 算法}
+	Gosper 算法可以将超几何单项式进行裂项，来达到求和的目的。换句话说，就是求一个多项式 $T(k)$，使得  $\displaystyle\sum^{n}_{k=1} t(k) = \displaystyle\sum^{n}_{k=1}(T(k+1) - T(k)) = T(n+1) - T(1)$。
+	
+	假设我们现在有一个超几何项 $t(k)$，我们要求 $\sum t(k) \delta k$，Gosper 算法分两步走。第一步将项的比值写成一个特殊的形式：
+	\begin{equation}
+	\cfrac{t(k+1)}{t(k)} = \cfrac{p(k+1)}{p(k)} \cfrac{q(k)}{r(k+1)}\text{，}
+	\label{Gosper_1}
+	\end{equation}
+	其中，$q$ 和 $r$ 为满足如下条件的多项式
+	\begin{equation}
+		k+\alpha | q(k),\ k+\beta | r(k),\ \alpha - \beta \ \text{不是正整数。} 
+		\label{Gosper_rule}
+	\end{equation}
+	
+	为了构造满足这个条件的多项式，我们按照如下步骤进行：先从 $p(k) = 1$ 出发，这时不难得到 $q(k)$ 和 $r(k)$。接下来我们检查是否违反了 \eqref{Gosper_rule} 。若 $q$ 和 $r$ 中有因子 $k+\alpha$ 以及 $k+\beta$，且 $\alpha - \beta = N > 0$，则我们按照 $k+\beta + 1$，$k+\beta$，$k+\beta - 1$ $\cdots$ $k+\alpha -1$ 的顺序将这些因子从 $q, r$ 中提出，并乘到 $p$ 中。即 $p(k)\gets p(k)(k+\beta + 1)(k+\beta)\cdots$。
+	
+	现在我们得到的 $p$、$q$ 和 $r$ 仍然满足 \eqref{Gosper_1}。我们重复这个动作，直到 \eqref{Gosper_rule} 成立。
+	
+	Gosper 的第二步需要求出一个超几何项 $T(k)$，使得
+	\begin{equation}
+		t(k) = T(k+1) - T(k)\text{。}
+		\label{Gosper_2}
+	\end{equation}
+	现在我们来寻找这个 $T$。Gosper 发现，可以将 $T(k)$ 写成如下形式
+	\begin{equation}
+		T(k) = \cfrac{r(k)s(k)t(k)}{p(k)}\text{，}
+		\label{Gosper_3}
+	\end{equation}
+	其中，$s(k)$ 是一个神秘的函数，我们需要用待定系数法来求解它。我们将 \eqref{Gosper_3} 代入 \eqref{Gosper_2} 并应用 \eqref{Gosper_1} 可得出
+	\begin{equation*}
+		\begin{split}
+			t(k) &= \cfrac{r(k+1)s(k+1)t(k+1)}{p(k+1)} - \cfrac{r(k)s(k)t(k)}{p(k)}\\
+			&= \cfrac{q(k)s(k+1)t(k)}{p(k)} - \cfrac{r(k)s(k)t(k)}{p(k)}\text{，}
+		\end{split}
+	\end{equation*}
+	因此我们有
+	\begin{equation}
+		p(k) = q(k)s(k+1) - r(k)s(k)\text{。}
+		\label{Gosper_4}
+	\end{equation}
+	如果我们能找到这个 $s$，那么我们也就能找到 $\sum t(k) \delta k$。反之，若不能找到，则也就不能找到 $T$。
+	
+	现在我们需要尝试确定 $s$ 的次数 $d$。若知道了 $s$ 的次数，则对于未知的系数 $(\alpha _d ,\cdots,\alpha _0)$，可以写成
+	\begin{equation}
+		s(k) = \alpha _d k^d+\alpha _{d-1} k^{d-1} + \cdots + \alpha _0, ~ \ \alpha _d \not= 0
+		\label{Gosper_5}
+	\end{equation}
+	并将这个式子代入 \eqref{Gosper_4}，求解即可得到 $s$。
+	
+	但是我们怎么确定 $s$ 的次数呢？事实表明，我们可以将 \eqref{Gosper_4} 改写成如下形式
+	\begin{equation}
+		2p(k) = Q(k)(s(k+1) + s(k))+R(k)(s(k+1) - s(k))\text{，}
+		\label{Gosper_6}
+	\end{equation}
+	其中，$Q(k) = q(k) - r(k)$，$R(k) = q(k) + r(k)$。
+	
+	如果 $s(k)$ 的次数为 $d$，那么和式 $s(k+1)+s(k) = 2\alpha_d k^d+\cdots$，而差 $s(k+1) - s(k) = \Delta s(k) = d\alpha_dk^{d-1}+\cdots$ 的次数为 $d-1$。我们用 $\text{deg}(P)$ 表示多项式 $P$ 的次数，特别的，规定 $0$ 的次数为 $-1$。如果 $\text{deg}(Q) \ge \text{deg}(R)$，那么 \eqref{Gosper_6} 右边的次数就是 $\text{deg}(Q)+d$，所以有 $d = \text{deg}(p) - \text{deg}(Q)$。如果 $\text{deg}(Q) < \text{deg}(R) = d'$，我们就能记 $Q(k) = \lambda'k^{d'-1} + \cdots$ 以及 $R(k) = \lambda k^{d'}+\cdots$，其中 $k \not = 0$，那么 \eqref{Gosper_6} 的右边就有形式
+	\begin{equation}
+		(2\lambda' \alpha_d + \lambda d\alpha_d)k^{d+d'-1}+\cdots\text{。}
+		\label{Gosper_7}
+	\end{equation}
+	因此有两种可能性：$2\lambda'+\lambda d \not = 0$，且 $d = \text{deg}(p) - \text{deg}(R)+1$；$2\lambda' + \lambda d = 0$，且 $d > \text{deg}(p) - \text{deg}(R)+1$。仅当 $\frac{-2 \lambda'}{\lambda}$ 是一个大于 $\text{deg}(p) - \text{deg}(R) + 1$ 的整数 $d$ 时，才需要对第二种情形进行检查。
+	
+	现在我们已知 $s$ 的次数，用待定系数法在 \eqref{Gosper_4} 中即可求出 $s$，接着在代入 \eqref{Gosper_3} 即可完成。
+	
+	现在讨论一个例子：$t(k) = \cfrac{k}{2^k}$。
+	
+	第一步：将项的比值表示成所要求的形式 \eqref{Gosper_1}，我们有
+	\begin{equation}
+		\cfrac{t(k+1)}{t(k)} = \cfrac{k+1}{2k} = \cfrac{p(k+1)}{p(k)} \cfrac{q(k)}{r(k+1)}\text{，}
+	\end{equation}
+	我们先尝试取 $p(k) = 1$，此时 $q(k) = k+1,r(k) = 2(k-1)$，对于 \eqref{Gosper_rule}，$\alpha = 1, \beta = -1$，那么 $\alpha - \beta = 2$，不满足条件。现在我们取 $p(k) \gets p(k)(k+\beta + 1)$，即 $p(k) = k,q(k) = 1,r(k) = 2$，满足条件。因此我们就得到了 $p(k), q(k), r(k)$。
+	
+	第二步：计算 $d$。我们可以算出 $Q(k) = q(k)-r(k)=-1, R(k) = 3$，那么 $\text{deg}(Q) = \text{deg}(R) = 0$，则 $d = 1$。
+	
+	第三步：计算 Gosper 方程。$p(k) = q(k)s(k+1)-r(k)s(k)$，其中 $s(k)$ 为 $d$ 次多项式。用待定系数法求 $s$，只要 $d \ge 0$ 就有解。不难算出 $s(k) = -(k+1)$，那么就可以算出 $T(k)=\cfrac{r(k)s(k)t(k)}{p(k)}=-\cfrac{k+1}{2^{k-1}}$。
+	
+	
+	
 	\chapter{数论}
 	\section{最大公约数}
 	\subsection{定义}
@@ -94,10 +288,9 @@ void Match()
 	那么如何计算最大公约数呢？我们先考虑两个数的情况。
 	\subsection{欧几里得算法}
 	\subsubsection{过程}
-	\noindent
-	已知我们有两个数 $a,b$，我们要求出其 $\gcd(a,b)$。\\
-	注意到：$\gcd(a,b) = \gcd(b,a \bmod b)$。\\
-	并且当 $b$ 为 $0$ 是，两数的最大公约数就是 $a$，且两数大小均减小，我们可以写出以下式子：\\
+	已知我们有两个数 $a,b$，我们要求出其 $\gcd(a,b)$。
+	
+	注意到：$\gcd(a,b) = \gcd(b,a \bmod b)$，并且当 $b$ 为 $0$ 是，两数的最大公约数就是 $a$，且两数大小均减小，我们可以写出以下式子：\\
 	\begin{equation}
 	\gcd(a,b) =\left\{
 		\begin{aligned}
@@ -105,7 +298,7 @@ void Match()
 			\gcd(b,a \bmod b) \quad b\not= 0
 		\end{aligned}
 		\right
-		.
+		.\label{gcd_mod}
 	\end{equation}
 	\subsubsection{证明}
 	\noindent
@@ -212,8 +405,8 @@ int merge(int x,int y)
 	$$\text{mm} = \max(\text{lp.mm, rp.mm, lp.rm + rp.lm})$$
 	$$\text{rm} = \max(\text{rp.rm, rp.sum + lp.rm})$$
 	$$\text{sum = lp.sum + rp.sum}$$
-	再来看修改，如果这一次区间修改\textbf{没有}造成决策的改变（及上述式子中 max 的取值没有改变），则该区间的答案会增大 $kx$。（其中 $k$ 是原先被选择子段的长度，$x$ 是本次修改每个点加的值）\par
-	因此我们可以\textbf{将原来维护的每个值看成一次函数}，每次区间加操作后值符合函数 $y=kx+b$，其中，$b$ 为该值原本的大小，而 $y$ 就是修改后值的大小。\par
+	再来看修改，如果这一次区间修改\texttt{没有}造成决策的改变（及上述式子中 max 的取值没有改变），则该区间的答案会增大 $kx$。（其中 $k$ 是原先被选择子段的长度，$x$ 是本次修改每个点加的值）\par
+	因此我们可以\texttt{将原来维护的每个值看成一次函数}，每次区间加操作后值符合函数 $y=kx+b$，其中，$b$ 为该值原本的大小，而 $y$ 就是修改后值的大小。\par
 	在这一情况下，当所加的 $x$ 极小时，max 的取值并不会发生变化。\par
 	我们假设现在在 max 函数里左右两个一次函数分别为 $y1, y2$，根据其图像得（图像懒得画了）：当 $x$ 较小时，max 的值取其中一条直线；当 $x$ 大于一定值时（这个值就是两图像交点对应的横坐标），max 的取值改为另一条直线。我们称这是一次 ”击败 (defeat) “ 事件。在这种情况下我们向下暴力递归到该节点并重新选取当下 $x$ 值最大的直线。\par
 	应此我们需要多记录一个当前节点发生击败事件所需最小的 $x$（通俗来讲，就是当前节点及其子树的所有节点的众多 max 中的一对函数两两相交的节点的横坐标的最小值）。当未发生击败事件时，将这个 $x$ 减小增加的值。当发生时，向下递归，如上述操作。\par 
@@ -354,9 +547,9 @@ struct KTT
 %==============================================图论==============================================
 	\part{图论}
 	语文不好，结点节点乱用了。\\
-	\textbf{一些常用概念}：\par
-	\textbf{度数}，与一个顶点 $v$ 关联的边的条数称作该顶点的 \textbf{度 (degree)}，记作 $d(v)$。特别的，对于边 $(v,v)$，则每条边对 $d(v)$ 要产生 $2$ 的贡献。\par
-	\textbf{时间戳}，表示\textbf{每个点被第一次访问的时间}(可以简单理解为是第几个被访问的点)。我们用 \textbf{dfn} （dfs number）数组记录每个点的时间戳，即 $\text{dfn}_i$ 表示第一次访问结点 $i$ 的时间。若结点 $i$ 未被访问，则 $\text{dfn}_i = 0$，因此通常也可以用 dfn 数组判断一个结点是否被访问过。
+	\texttt{一些常用概念}：\par
+	\texttt{度数}，与一个顶点 $v$ 关联的边的条数称作该顶点的 \texttt{度 (degree)}，记作 $d(v)$。特别的，对于边 $(v,v)$，则每条边对 $d(v)$ 要产生 $2$ 的贡献。\par
+	\texttt{时间戳}，表示\texttt{每个点被第一次访问的时间}(可以简单理解为是第几个被访问的点)。我们用 \texttt{dfn} （dfs number）数组记录每个点的时间戳，即 $\text{dfn}_i$ 表示第一次访问结点 $i$ 的时间。若结点 $i$ 未被访问，则 $\text{dfn}_i = 0$，因此通常也可以用 dfn 数组判断一个结点是否被访问过。
 	\chapter{树}
 	\section{相关定义与前置知识}
 	图论中的树和现实中的树很像。\par
@@ -365,13 +558,13 @@ struct KTT
 		\item 根结点 (root)：在有根树上指定的一个节点，无特殊要求。
 		\item 叶结点 (leaf node)：对于无根树，即为度数不超过 $1$ 的结点；对于有根树，即为没有子结点的结点。
 	\end{itemize}\par
-	一个没有固定根节点的树称为 \textbf{无根树 (unrooted tree)}。无根树也有形式化的定义：
+	一个没有固定根节点的树称为 \texttt{无根树 (unrooted tree)}。无根树也有形式化的定义：
 	\begin{itemize}
 		\item 有 $n$ 个结点，$n-1$ 条边的连通无向图.
 		\item 无向无环连通图。
 		\item 任意两个结点之间有且仅有一条简单路径的无向图。
 	\end{itemize}\par
-	在无向图的基础上，若指定一个点为根（若需要，任何点都可被指定为根），则形成一棵 \textbf{有根树 (rooted tree)}。有根树在很多时候和无根树一样，只是根规定了结点的上下关系。\par
+	在无向图的基础上，若指定一个点为根（若需要，任何点都可被指定为根），则形成一棵 \texttt{有根树 (rooted tree)}。有根树在很多时候和无根树一样，只是根规定了结点的上下关系。\par
 	\begin{itemize}
 		\item 森林（forest）：多个树凑一起就是森林（是不是很形象？）。同时，一棵树也是森林。
 	\end{itemize}
@@ -386,13 +579,12 @@ struct KTT
 		\item 后代 (descendant)：子结点和子结点的后代（自己递归）。
 		\item 子树 (subtree)：删掉与父亲连的边后，该结点所在的子图为该结点的子树。
 	\end{itemize}
-	英语是不是看着有点怪？为了防止性别歧视！
 	
 	\section{树链剖分}
 	\subsection{解决的问题}
 	树链剖分可以将树分割成若干条链，使其组合成线性结构，以可以用其他数据结构（如线段树）维护树上信息。\par
 	下面用 \href{https://www.luogu.com.cn/problem/P3384}{Luogu 3384} 为例子。可以看到这道题需要我们对树上的一些点区间操作。若暴力一个点一个点去操作是肯定过不了的。看到区间操作我们容易想到线段树等数据结构，但因为树不是一个线性结构，因此无法直接使用。这时候就需要先用树链剖分进行操作了。\par
-	树链剖分有多种形式，如 \textbf{重链剖分} 和 \textbf{长链剖分} 和 $Link/cut Tree$ 的剖分。但大多数情况下，树链剖分还是指重链剖分。\par
+	树链剖分有多种形式，如 \texttt{重链剖分} 和 \texttt{长链剖分} 和 $Link/cut Tree$ 的剖分。但大多数情况下，树链剖分还是指重链剖分。\par
 	\subsection{重链剖分}
 	重链剖分能保证剖出来的每条链上结点的 DFS 序连续，因此可以方便其他数据结构（如线段树）来维护树上信息。\par
 	我们先给出一些定义：
@@ -463,20 +655,20 @@ void dfs2(int u, int t)
 	\section{相关定义与前置知识}
 	无向图的连通性主要研究割点和割边。
 	\begin{itemize}
-		\item 割点：在无向图中，删去该点后会使连通分量数增加的点为 \textbf{割点}。
-		\item 割边：在无向图中，删去该边后会使连通分量数增加的边为 \textbf{割边}，也称作 \textbf{桥}。
+		\item 割点：在无向图中，删去该点后会使连通分量数增加的点为 \texttt{割点}。
+		\item 割边：在无向图中，删去该边后会使连通分量数增加的边为 \texttt{割边}，也称作 \texttt{桥}。
 	\end{itemize}
 	\noindent
 	孤立点和孤立边上的端点都不是给点，但孤立边是割边（这其实是显然的）。\par
 	显然，割点和割边重要的原因就是删去他们后相较于非割点和非割边对图的连通性有更大的影响。下面还有几个概念，都是基于刚才的割点和割边的。\par
 	\begin{itemize}
-		\item 点双连通图：不存在割点的无向连通图被称为 \textbf{点双连通图}。孤立点和孤立边均为点双连通图。
-		\item 边双连通图：不存在割边的无向连通图被称为 \textbf{边双连通图}。孤立点是边双连通图，孤立边不是。
-		\item 点双连通分量：一张图的极大点双连通子图称为 \textbf{点双连通分量（V-BCC）}，简称 \textbf{点双}。
-		\item 边双连通分量：一张图的极大边双连通子图称为 \textbf{边双连通分量（E-BCC）}，简称 \textbf{边双}。
+		\item 点双连通图：不存在割点的无向连通图被称为 \texttt{点双连通图}。孤立点和孤立边均为点双连通图。
+		\item 边双连通图：不存在割边的无向连通图被称为 \texttt{边双连通图}。孤立点是边双连通图，孤立边不是。
+		\item 点双连通分量：一张图的极大点双连通子图称为 \texttt{点双连通分量（V-BCC）}，简称 \texttt{点双}。
+		\item 边双连通分量：一张图的极大边双连通子图称为 \texttt{边双连通分量（E-BCC）}，简称 \texttt{边双}。
 	\end{itemize}
 	
-	在连通性这一块，我们用的均为 Tarjan 算法。因此，还需要知道 \textbf{DFS 生成树}。\par
+	在连通性这一块，我们用的均为 Tarjan 算法。因此，还需要知道 \texttt{DFS 生成树}。\par
 	有向图的 DFS 生成树主要有 4 种边（不一定全部出现）：
 	\begin{itemize}
 		\item 树边（tree edge）：绿色边，每次搜索找到一个还没有访问过的结点时就形成了一条树边。
@@ -503,7 +695,7 @@ void dfs2(int u, int t)
 	推出：若存在 $ y \in T(x)$ 在不经过 $x$ 的情况下与 $T^\prime(x)$ 中所有点均不连通，则 $x$ 就是割点。\par
 	现在我们思考怎么判断对于一个 $y \in T(x)$，是否在不经过 $x$ 的情况下与 $T^\prime(x)$ 中所有点都不连通。\par
 	注意到，如果 $y\in T(x)$ 不经过 $x$ 就和 $T^\prime(x)$ 连通，就一定存在从 $y$ 到 $T^\prime(x)$ 的一条路径。我们称这条路径在 $T^\prime(x)$ 的第一个结点为 $v$，倒数第二个，也就是最后一个在 $T(x)$ 上的结点为 $u$。如果 $(u,v)$ 是树边，那么 $u=x$，矛盾。则 $v$ 应该是 $u$ 的祖先。又因为 $x$ 是 $u$ 的祖先，$v\in T^\prime(x)$，则 $v$ 也是 $x$ 的祖先。\par 
-	这时我们发现，$x$ 不是割点，那么就会有一条\textbf{非树边}使 $y\in T(x)$ 连向 $x$ 的祖先。这个可以用时间戳来判断。设 $f_x$ 表示与 $x$ 通过\textbf{非树边}相连的点的时间戳的最小值，则可写为 $f_x < dfn_x$。\par
+	这时我们发现，$x$ 不是割点，那么就会有一条\texttt{非树边}使 $y\in T(x)$ 连向 $x$ 的祖先。这个可以用时间戳来判断。设 $f_x$ 表示与 $x$ 通过\texttt{非树边}相连的点的时间戳的最小值，则可写为 $f_x < dfn_x$。\par
 	因为 $x$ 的不同儿子子树之间没有非树边（子树独立性），设 $x$ 的儿子 $y^\prime$ 的子树包含 $y$，即 $y\in T(y^\prime)$。\par
 	\begin{itemize}
 		\item 对于 $T(y^\prime)$，如果存在 $u\in T(y^\prime)$ 满足 $f_u < dfn_u$，那么删除 $x$ 后 $T(y^\prime)$ 的每个点与 $T^\prime(x)$ 均连通。这时 $u$ 与 $T^\prime(x)$ 中的某个点通过非树边直接连通，$T(y^\prime)$ 中的所有点均通过树边连通。此时 $x$ 不是割点。\par
