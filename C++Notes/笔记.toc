@@ -14,6 +14,8 @@
 \contentsline {subsubsection}{复杂度分析}{9}{subsubsection*.7}%
 \contentsline {section}{\numberline {1.3}回文串}{9}{section.1.3}%
 \contentsline {subsection}{\numberline {1.3.1}Manacher 算法}{9}{subsection.1.3.1}%
+\contentsline {subsubsection}{过程}{9}{subsubsection*.8}%
+\contentsline {subsubsection}{代码}{10}{subsubsection*.9}%
 \contentsline {part}{第二部分\hspace {1em}数学}{11}{part.2}%
 \contentsline {chapter}{\numberline {第二章\hspace {.3em}}组合数学}{13}{chapter.2}%
 \contentsline {section}{\numberline {2.1}二项式系数}{13}{section.2.1}%
@@ -22,22 +24,22 @@
 \contentsline {section}{\numberline {3.1}最大公约数}{15}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}定义}{15}{subsection.3.1.1}%
 \contentsline {subsection}{\numberline {3.1.2}欧几里得算法}{15}{subsection.3.1.2}%
-\contentsline {subsubsection}{过程}{15}{subsubsection*.8}%
-\contentsline {subsubsection}{证明}{15}{subsubsection*.9}%
-\contentsline {subsubsection}{实现}{16}{subsubsection*.10}%
+\contentsline {subsubsection}{过程}{15}{subsubsection*.10}%
+\contentsline {subsubsection}{证明}{15}{subsubsection*.11}%
+\contentsline {subsubsection}{实现}{16}{subsubsection*.12}%
 \contentsline {section}{\numberline {3.2}裴蜀定理}{16}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}内容}{16}{subsection.3.2.1}%
 \contentsline {section}{\numberline {3.3}乘法逆元}{16}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}定义}{16}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}扩展欧几里得算法}{16}{subsection.3.3.2}%
-\contentsline {subsubsection}{过程}{16}{subsubsection*.11}%
-\contentsline {subsubsection}{实现}{16}{subsubsection*.12}%
+\contentsline {subsubsection}{过程}{16}{subsubsection*.13}%
+\contentsline {subsubsection}{实现}{16}{subsubsection*.14}%
 \contentsline {part}{第三部分\hspace {1em}数据结构}{19}{part.3}%
 \contentsline {chapter}{\numberline {第四章\hspace {.3em}}并查集}{21}{chapter.4}%
 \contentsline {section}{\numberline {4.1}并查集}{21}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}实现}{21}{subsection.4.1.1}%
-\contentsline {subsubsection}{解释}{21}{subsubsection*.13}%
-\contentsline {subsubsection}{代码}{21}{subsubsection*.14}%
+\contentsline {subsubsection}{解释}{21}{subsubsection*.15}%
+\contentsline {subsubsection}{代码}{21}{subsubsection*.16}%
 \contentsline {section}{\numberline {4.2}带权并查集}{21}{section.4.2}%
 \contentsline {chapter}{\numberline {第五章\hspace {.3em}}线段树}{23}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Kinetic Tournament 树 (KTT)}{23}{section.5.1}%
@@ -50,17 +52,17 @@
 \contentsline {section}{\numberline {6.2}树链剖分}{32}{section.6.2}%
 \contentsline {subsection}{\numberline {6.2.1}解决的问题}{32}{subsection.6.2.1}%
 \contentsline {subsection}{\numberline {6.2.2}重链剖分}{32}{subsection.6.2.2}%
-\contentsline {subsubsection}{实现}{32}{subsubsection*.15}%
-\contentsline {subsubsection}{重链剖分性质}{33}{subsubsection*.16}%
+\contentsline {subsubsection}{实现}{32}{subsubsection*.17}%
+\contentsline {subsubsection}{重链剖分性质}{33}{subsubsection*.18}%
 \contentsline {chapter}{\numberline {第七章\hspace {.3em}}连通性相关}{35}{chapter.7}%
 \contentsline {section}{\numberline {7.1}相关定义与前置知识}{35}{section.7.1}%
 \contentsline {section}{\numberline {7.2}割点}{36}{section.7.2}%
 \contentsline {subsection}{\numberline {7.2.1}过程}{36}{subsection.7.2.1}%
-\contentsline {subsubsection}{对于非根节点的判定：}{36}{subsubsection*.17}%
-\contentsline {subsubsection}{对于根节点的判定：}{36}{subsubsection*.18}%
+\contentsline {subsubsection}{对于非根节点的判定：}{36}{subsubsection*.19}%
+\contentsline {subsubsection}{对于根节点的判定：}{36}{subsubsection*.20}%
 \contentsline {subsection}{\numberline {7.2.2}实现}{36}{subsection.7.2.2}%
-\contentsline {subsubsection}{解释}{36}{subsubsection*.19}%
-\contentsline {subsubsection}{代码}{37}{subsubsection*.20}%
+\contentsline {subsubsection}{解释}{36}{subsubsection*.21}%
+\contentsline {subsubsection}{代码}{37}{subsubsection*.22}%
 \contentsline {section}{\numberline {7.3}割边}{38}{section.7.3}%
 \contentsline {subsection}{\numberline {7.3.1}过程}{38}{subsection.7.3.1}%
 \contentsline {subsection}{\numberline {7.3.2}实现}{38}{subsection.7.3.2}%
@@ -70,5 +72,5 @@
 \contentsline {subsection}{\numberline {7.5.1}实现}{38}{subsection.7.5.1}%
 \contentsline {section}{\numberline {7.6}强连通分量}{38}{section.7.6}%
 \contentsline {subsection}{\numberline {7.6.1}实现}{38}{subsection.7.6.1}%
-\contentsline {subsubsection}{解释}{38}{subsubsection*.21}%
-\contentsline {subsubsection}{代码}{38}{subsubsection*.22}%
+\contentsline {subsubsection}{解释}{38}{subsubsection*.23}%
+\contentsline {subsubsection}{代码}{38}{subsubsection*.24}%
